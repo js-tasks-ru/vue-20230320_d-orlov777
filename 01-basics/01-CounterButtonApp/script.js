@@ -1,8 +1,6 @@
 import { createApp } from './vendor/vue.esm-browser.js';
 
 const App = {
-  counter: 0,
-
   data() {
     return { counter: 0 };
   },
