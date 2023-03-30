@@ -55,14 +55,14 @@ export default defineComponent({
 
   template: `
     <div class="page-meetup">
-      <UiContainer v-if="state === 'LOADING'">
+      <UiContainer v-if="state === $options.StateType.LOADING">
         <UiAlert>Загрузка...</UiAlert>
       </UiContainer>
       
-      <UiContainer v-if="state === 'ERROR'">
+      <UiContainer v-if="state === $options.StateType.ERROR">
         <UiAlert>{{ error }}</UiAlert>
       </UiContainer>
       
-      <MeetupView v-if="state === 'LOADED'" :meetup="meetup">
+      <MeetupView v-if="state === $options.StateType.LOADED" :meetup="meetup">
     </div>`,
 });
