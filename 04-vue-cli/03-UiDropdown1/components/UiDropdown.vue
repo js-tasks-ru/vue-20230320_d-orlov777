@@ -20,7 +20,7 @@
         class="dropdown__item"
         :class="{ dropdown__item_icon: hasIcon }"
         :key="option.value"
-        @click="() => select(option)"
+        @click="() => select(option.value)"
         role="option"
         type="button"
       >
@@ -28,6 +28,10 @@
         {{ option.text }}
       </button>
     </div>
+
+    <select :value="value?.value" :text="value?.text" @change="selectNative">
+      <option v-for="option in options" :value="option.value" :key="option.value">{{ option.text }}</option>
+    </select>
   </div>
 </template>
 
@@ -86,9 +90,14 @@ export default defineComponent({
   },
 
   methods: {
-    select(option: TItem) {
-      this.value = option;
+    select(value: string) {
+      this.value = this.options.find((it) => it.value === value);
       this.isOpened = false;
+    },
+
+    selectNative(evt: Event) {
+      const { value } = evt.currentTarget as HTMLSelectElement;
+      this.select(value);
     },
   },
 });
