@@ -29,7 +29,7 @@
       </button>
     </div>
 
-    <select :value="value?.value" :text="value?.text" @change="selectNative">
+    <select v-show="false" :value="value?.value" :text="value?.text" @change="selectNative">
       <option v-for="option in options" :value="option.value" :key="option.value">{{ option.text }}</option>
     </select>
   </div>
