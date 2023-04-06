@@ -20,7 +20,7 @@ type TToastData = {
 };
 
 export default defineComponent({
-  name: 'TheToast',
+  name: 'UiToast',
 
   components: { UiIcon },
 

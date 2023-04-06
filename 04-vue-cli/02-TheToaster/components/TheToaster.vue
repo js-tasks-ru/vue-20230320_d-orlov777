@@ -1,19 +1,19 @@
 <template>
   <div class="toasts">
-    <TheToast v-for="toast in toasts" :kind="toast.kind" :text="toast.text" :key="toast.text" @close="update" />
+    <UiToast v-for="toast in toasts" :kind="toast.kind" :text="toast.text" :key="toast.text" @close="update" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import TheToast, { EToastKind } from './TheToast.vue';
+import UiToast, { EToastKind } from './UiToast.vue';
 
 type TToasterData = { toasts: { kind: EToastKind; text: string }[] };
 
 export default defineComponent({
   name: 'TheToaster',
 
-  components: { TheToast },
+  components: { UiToast },
 
   data(): TToasterData {
     return {
