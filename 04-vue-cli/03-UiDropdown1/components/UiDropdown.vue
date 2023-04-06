@@ -4,11 +4,7 @@
       type="button"
       class="dropdown__toggle"
       :class="{ dropdown__toggle_icon: hasIcon }"
-      @click="
-        () => {
-          isOpened = !isOpened;
-        }
-      "
+      @click="isOpened = !isOpened"
     >
       <UiIcon v-if="value?.icon" :icon="value.icon" class="dropdown__icon" />
       <span>{{ value?.text || title }}</span>
@@ -20,7 +16,7 @@
         class="dropdown__item"
         :class="{ dropdown__item_icon: hasIcon }"
         :key="option.value"
-        @click="() => select(option.value)"
+        @click="selectItem(option.value)"
         role="option"
         type="button"
       >
@@ -29,7 +25,12 @@
       </button>
     </div>
 
-    <select v-show="false" :value="value?.value" :text="value?.text" @change="selectNative">
+    <select
+      v-show="false"
+      :value="value?.value"
+      :text="value?.text"
+      @change="selectItem(($event.target as HTMLSelectElement).value)"
+    >
       <option v-for="option in options" :value="option.value" :key="option.value">{{ option.text }}</option>
     </select>
   </div>
@@ -78,26 +79,15 @@ export default defineComponent({
       return this.options.some(({ icon }) => icon);
     },
 
-    value: {
-      get(): TItem | undefined {
-        return this.options.find(({ value }) => value === this.modelValue);
-      },
-
-      set({ value }: TItem) {
-        this.$emit('update:modelValue', value);
-      },
+    value(): TItem | undefined {
+      return this.options.find(({ value }) => value === this.modelValue);
     },
   },
 
   methods: {
-    select(value: string) {
-      this.value = this.options.find((it) => it.value === value);
+    selectItem(value: string) {
       this.isOpened = false;
-    },
-
-    selectNative(evt: Event) {
-      const { value } = evt.currentTarget as HTMLSelectElement;
-      this.select(value);
+      this.$emit('update:modelValue', value);
     },
   },
 });
