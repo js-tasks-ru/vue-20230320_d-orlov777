@@ -38,7 +38,10 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(isoWeek);
 
 type TMeetup = {
   id: number;
@@ -75,13 +78,13 @@ export default defineComponent({
 
   computed: {
     current(): TDay[] {
-      const startDate = moment(this.now).startOf('month').startOf('isoWeek');
-      const endDate = moment(this.now).endOf('month').endOf('isoWeek');
+      const startDate = dayjs(this.now).startOf('month').startOf('isoWeek');
+      const endDate = dayjs(this.now).endOf('month').endOf('isoWeek');
 
       return Array(endDate.diff(startDate, 'days') + 1)
         .fill(startDate)
         .map((_, i) => {
-          const today = startDate.clone().add(i, 'days');
+          const today = startDate.add(i, 'days');
           return {
             date: today.date(),
             month: today.month(),
@@ -104,11 +107,11 @@ export default defineComponent({
 
   methods: {
     prevMonth() {
-      this.now = moment(this.now).startOf('month').subtract(1, 'day').toDate();
+      this.now = dayjs(this.now).startOf('month').subtract(1, 'day').toDate();
     },
 
     nextMonth() {
-      this.now = moment(this.now).endOf('month').add(1, 'day').toDate();
+      this.now = dayjs(this.now).endOf('month').add(1, 'day').toDate();
     },
   },
 });
