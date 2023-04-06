@@ -1,5 +1,5 @@
 <template>
-  <div :class="['toast', data.className]">
+  <div class="toast" :class="data.className">
     <UiIcon class="toast__icon" :icon="data.icon" />
     <span>{{ text }}</span>
   </div>
