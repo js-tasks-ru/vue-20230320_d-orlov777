@@ -18,7 +18,6 @@ type TToastData = {
   icon: string;
   className: string;
 };
-
 export default defineComponent({
   name: 'UiToast',
 
@@ -61,7 +60,7 @@ export default defineComponent({
 
   mounted() {
     setTimeout(() => {
-      this.$emit('close', this.text);
+      this.$emit('close');
     }, this.timeout);
   },
 });
