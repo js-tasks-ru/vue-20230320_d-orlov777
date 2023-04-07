@@ -1,14 +1,15 @@
 <template>
   <div class="toasts">
-    <UiToast v-for="toast in toasts" :kind="toast.kind" :text="toast.text" :key="toast.text" @close="update" />
+    <UiToast v-for="{ kind, text, id } in toasts" :kind="kind" :text="text" :key="id" @close="update()" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { nanoid } from 'nanoid';
 import UiToast, { EToastKind } from './UiToast.vue';
 
-type TToasterData = { toasts: { kind: EToastKind; text: string }[] };
+type TToasterData = { toasts: { kind: EToastKind; text: string; id: string }[] };
 
 export default defineComponent({
   name: 'TheToaster',
@@ -23,15 +24,15 @@ export default defineComponent({
 
   methods: {
     success(text: string) {
-      this.toasts.push({ kind: EToastKind.SUCCESS, text });
+      this.toasts.push({ id: nanoid(5), kind: EToastKind.SUCCESS, text });
     },
 
     error(text: string) {
-      this.toasts.push({ kind: EToastKind.ERROR, text });
+      this.toasts.push({ id: nanoid(5), kind: EToastKind.ERROR, text });
     },
 
-    update(text: string) {
-      this.toasts = this.toasts.filter((it) => it.text !== text);
+    update() {
+      this.toasts.splice(0, 1);
     },
   },
 });
