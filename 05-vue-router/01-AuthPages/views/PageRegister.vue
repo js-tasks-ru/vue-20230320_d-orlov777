@@ -45,7 +45,6 @@
 import { defineComponent } from 'vue';
 import UiFormGroup from '../components/UiFormGroup.vue';
 import UiContainer from '../components/UiContainer.vue';
-import { getBackPath } from '../utils';
 import { RouteName } from '../const';
 
 export default defineComponent({
@@ -60,7 +59,7 @@ export default defineComponent({
 
   methods: {
     handleSubmit() {
-      this.$router.push(getBackPath(this.$route.query) || { name: RouteName.MAIN });
+      this.$router.push({ name: RouteName.LOGIN });
     },
   },
 });
