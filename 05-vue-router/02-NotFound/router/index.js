@@ -12,5 +12,9 @@ export const router = createRouter({
       path: '/page-b',
       component: () => import('../views/PageB'),
     },
+    {
+      path: '/:notFound(.*)*',
+      component: () => import('../views/PageNotFound'),
+    },
   ],
 });
