@@ -1,15 +1,23 @@
 <template>
   <h1 class="logo">
-    <a href="/" class="logo__link"
+    <RouterLink
+      v-if="$route.name !== $options.RouteName.MAIN"
+      :to="{ name: $options.RouteName.MAIN }"
+      class="logo__link"
       ><img src="@/assets/logo.svg" alt="Meetups" class="logo__image" width="174" height="30"
-    /></a>
+    /></RouterLink>
+    <img v-else src="@/assets/logo.svg" alt="Meetups" class="logo__image" width="174" height="30" />
   </h1>
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+import { RouteName } from '../const';
+
+export default defineComponent({
   name: 'MeetupsLogo',
-};
+  RouteName,
+});
 </script>
 
 <style scoped>

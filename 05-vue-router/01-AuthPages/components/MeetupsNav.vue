@@ -1,14 +1,31 @@
 <template>
   <nav class="nav">
-    <a href="/login" class="nav__link">Вход</a>
-    <a href="/register" class="nav__link">Регистрация</a>
+    <RouterLink
+      v-if="$route.name !== $options.RouteName.LOGIN"
+      :to="{ name: $options.RouteName.LOGIN }"
+      class="nav__link"
+      >Вход</RouterLink
+    >
+    <span v-else class="nav__link">Вход</span>
+
+    <RouterLink
+      v-if="$route.name !== $options.RouteName.REGISTER"
+      :to="{ name: $options.RouteName.REGISTER }"
+      class="nav__link"
+      >Регистрация</RouterLink
+    >
+    <span v-else class="nav__link">Регистрация</span>
   </nav>
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+import { RouteName } from '../const';
+
+export default defineComponent({
   name: 'MeetupsNav',
-};
+  RouteName,
+});
 </script>
 
 <style scoped>
