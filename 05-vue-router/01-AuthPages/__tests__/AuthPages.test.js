@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { createMemoryHistory, createRouter } from 'vue-router';
-const { router } = require(global.getSolutionPath('router/index.js'));
+const { router } = require(global.getSolutionPath('router/index.ts'));
 const App = require(global.getSolutionPath('App')).default;
 const MeetupsLogo = require(global.getSolutionPath('components/MeetupsLogo')).default;
 const MeetupsNav = require(global.getSolutionPath('components/MeetupsNav')).default;
