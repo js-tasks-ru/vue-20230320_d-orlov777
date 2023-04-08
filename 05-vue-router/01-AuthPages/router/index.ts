@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import PageIndex from '../views/PageIndex.vue';
-import PageRegister from '../views/PageRegister.vue';
-import PageLogin from '../views/PageLogin.vue';
 import { RouteName } from '../const';
 
 export const router = createRouter({
@@ -10,17 +7,17 @@ export const router = createRouter({
     {
       path: '/',
       name: RouteName.MAIN,
-      component: PageIndex,
+      component: () => import('../views/PageIndex.vue'),
     },
     {
       path: '/register',
       name: RouteName.REGISTER,
-      component: PageRegister,
+      component: () => import('../views/PageRegister.vue'),
     },
     {
       path: '/login',
       name: RouteName.LOGIN,
-      component: PageLogin,
+      component: () => import('../views/PageLogin.vue'),
     },
   ],
 });
