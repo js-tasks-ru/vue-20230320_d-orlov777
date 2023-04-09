@@ -15,13 +15,7 @@ export const router = createRouter({
     }
 
     if (savedPosition) {
-      return to.name === 'index'
-        ? new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(savedPosition);
-            }, 500);
-          })
-        : savedPosition;
+      return savedPosition;
     }
 
     return { left: 0, top: 0 };
