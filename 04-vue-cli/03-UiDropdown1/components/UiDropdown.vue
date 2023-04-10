@@ -1,31 +1,96 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ dropdown_opened: isOpened }">
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="{ dropdown__toggle_icon: hasIcon }"
+      @click="isOpened = !isOpened"
+    >
+      <UiIcon v-if="value?.icon" :icon="value.icon" class="dropdown__icon" />
+      <span>{{ value?.text || title }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="isOpened" class="dropdown__menu" role="listbox">
+      <button
+        v-for="option in options"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: hasIcon }"
+        :key="option.value"
+        @click="selectItem(option.value)"
+        role="option"
+        type="button"
+      >
+        <UiIcon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
+
+    <select
+      v-show="false"
+      :value="value?.value"
+      :text="value?.text"
+      @change="selectItem(($event.target as HTMLSelectElement).value)"
+    >
+      <option v-for="option in options" :value="option.value" :key="option.value">{{ option.text }}</option>
+    </select>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, type PropType } from 'vue';
 import UiIcon from './UiIcon.vue';
 
-export default {
+type TItem = { value: string; text: string; icon?: string };
+type TData = {
+  isOpened: boolean;
+};
+
+export default defineComponent({
   name: 'UiDropdown',
 
   components: { UiIcon },
-};
+
+  props: {
+    options: {
+      type: Array as PropType<TItem[]>,
+      default: () => [],
+    },
+
+    modelValue: {
+      type: String,
+    },
+
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+
+  emits: ['update:modelValue'],
+
+  data(): TData {
+    return {
+      isOpened: false,
+    };
+  },
+
+  computed: {
+    hasIcon(): boolean {
+      return this.options.some(({ icon }) => icon);
+    },
+
+    value(): TItem | undefined {
+      return this.options.find(({ value }) => value === this.modelValue);
+    },
+  },
+
+  methods: {
+    selectItem(value: string) {
+      this.isOpened = false;
+      this.$emit('update:modelValue', value);
+    },
+  },
+});
 </script>
 
 <style scoped>
