@@ -18,7 +18,7 @@
       class="form-control"
       :class="{ ['form-control_rounded']: rounded, ['form-control_sm']: small }"
       v-bind="$attrs"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @[eventName]="$emit('update:modelValue', $event.target.value)"
     />
 
     <div v-if="hasRightIcon()" class="input-group__icon">
@@ -30,6 +30,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+type TModelModifier = {
+  lazy?: boolean;
+};
+
 export default defineComponent({
   name: 'UiInput',
   props: {
@@ -37,6 +41,9 @@ export default defineComponent({
     rounded: Boolean,
     multiline: Boolean,
     modelValue: String,
+    modelModifiers: {
+      default: (): TModelModifier => ({}),
+    },
   },
 
   inheritAttrs: false,
@@ -57,6 +64,12 @@ export default defineComponent({
     },
     hasIcon() {
       return this.hasLeftIcon() || this.hasRightIcon();
+    },
+  },
+
+  computed: {
+    eventName(): string {
+      return this.modelModifiers.lazy ? 'change' : 'input';
     },
   },
 });
