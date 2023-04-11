@@ -77,9 +77,16 @@ router.beforeEach(async (to, from) => {
     return true;
   }
 
-  for await (const middleware of middlewares as TMiddleware[]) {
-    await middleware({ router, to, from });
-  }
+  const [first, ...other] = (middlewares as TMiddleware[]).reverse();
+
+  const middleware = other.reduce((acc, cur) => {
+    return async (...params) => {
+      await cur(...params);
+      await acc(...params);
+    };
+  }, first);
+
+  await middleware({ from, to, router });
 
   return true;
 });
