@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-const { router } = require(global.getSolutionPath('router/index.js'));
+const { router } = require(global.getSolutionPath('router/index.ts'));
 const { login, logout } = require(global.getSolutionPath('services/authService.js'));
 const App = require(global.getSolutionPath('App')).default;
 

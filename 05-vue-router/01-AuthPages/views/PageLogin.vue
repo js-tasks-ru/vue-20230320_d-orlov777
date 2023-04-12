@@ -16,18 +16,27 @@
         <div class="form__buttons">
           <button type="submit" class="button button_primary button_block">Войти</button>
         </div>
-        <div class="form__append">Нет аккаунта? <a href="/register" class="link">Зарегистрируйтесь</a></div>
+        <div class="form__append">
+          Нет аккаунта?
+          <RouterLink :to="{ name: $options.RouteName.REGISTER }" class="link">Зарегистрируйтесь</RouterLink>
+        </div>
       </form>
     </UiContainer>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import UiFormGroup from '../components/UiFormGroup.vue';
 import UiContainer from '../components/UiContainer.vue';
+import { getBackPath } from '../utils';
 
-export default {
+import { RouteName } from '../const';
+
+export default defineComponent({
   name: 'PageLogin',
+
+  RouteName,
 
   components: {
     UiFormGroup,
@@ -36,10 +45,10 @@ export default {
 
   methods: {
     handleSubmit() {
-      // Требуется обработать сабмит формы
+      this.$router.push(getBackPath(this.$route.query) || { name: RouteName.MAIN });
     },
   },
-};
+});
 </script>
 
 <style></style>
