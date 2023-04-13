@@ -22,7 +22,6 @@ const DateKind = {
 
 export default defineComponent({
   name: 'UiInputDate',
-  inheritAttrs: false,
   props: {
     modelValue: Number,
     type: {
