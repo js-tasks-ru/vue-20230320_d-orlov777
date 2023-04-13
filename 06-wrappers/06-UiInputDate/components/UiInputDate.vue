@@ -1,10 +1,7 @@
 <template>
   <UiInput v-model="computedModelValue" :type="type" :step="stepValue" ref="input">
-    <template v-if="$slots['left-icon']" #left-icon>
-      <slot name="left-icon" />
-    </template>
-    <template v-if="$slots['right-icon']" #right-icon>
-      <slot name="right-icon" />
+    <template v-for="slotName in Object.keys($slots)" #[slotName]>
+      <slot :name="slotName" />
     </template>
   </UiInput>
 </template>
@@ -58,7 +55,7 @@ export default defineComponent({
     },
 
     stepValue(): number {
-      return this.type === DateKind.TIME ? 60 * this.step : this.step;
+      return this.type === DateKind.TIME ? 60 * Math.max(this.step, 1) : this.step;
     },
 
     computedModelValue: {
