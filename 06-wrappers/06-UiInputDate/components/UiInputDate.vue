@@ -22,6 +22,7 @@ const DateKind = {
 
 export default defineComponent({
   name: 'UiInputDate',
+  inheritAttrs: false,
   props: {
     modelValue: Number,
     type: {
@@ -55,7 +56,8 @@ export default defineComponent({
     },
 
     stepValue(): number {
-      return this.type === DateKind.TIME ? 60 * Math.max(this.step, 1) : this.step;
+      const step = Math.max(this.step, 1);
+      return this.type === DateKind.TIME ? 60 * step : step;
     },
 
     computedModelValue: {
