@@ -79,19 +79,10 @@ export default defineComponent({
       },
 
       set() {
-        let inputValue: number = ((this.$refs.input as typeof UiInput).$refs.input as HTMLInputElement).valueAsNumber;
-
-        switch (this.type) {
-          case DateKind.TIME:
-            inputValue += this.dateValue + this.secondValue;
-            break;
-
-          case DateKind.DATE:
-            inputValue += this.timeValue;
-            break;
-        }
-
-        this.$emit('update:modelValue', inputValue);
+        this.$emit(
+          'update:modelValue',
+          ((this.$refs.input as typeof UiInput).$refs.input as HTMLInputElement).valueAsNumber,
+        );
       },
     },
   },
