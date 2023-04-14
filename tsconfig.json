@@ -1,12 +1,22 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["**/*.ts", "**/*.vue"],
-  "exclude": ["node_modules"],
+  "include": [
+    "**/*.ts",
+    "**/*.vue"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
   "compilerOptions": {
+    "lib": [
+      "ES2017"
+    ],
     "baseUrl": ".",
     "allowJs": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   }
 }

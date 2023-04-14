@@ -5,7 +5,7 @@
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <UiDropdown title="Тип" :options="$options.AgendaItemTypeOptions" name="type" />
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
@@ -31,18 +31,21 @@
       <UiInput multiline name="description" />
     </UiFormGroup>
     <UiFormGroup label="Язык">
-      <UiDropdown title="Язык" :options="$options.talkLanguageOptions" name="language" />
+      <UiDropdown title="Язык" :options="$options.TalkLanguageOptions" name="language" />
     </UiFormGroup>
   </fieldset>
 </template>
 
-<script>
+<script lang="ts">
 import UiIcon from './UiIcon.vue';
 import UiFormGroup from './UiFormGroup.vue';
 import UiInput from './UiInput.vue';
 import UiDropdown from './UiDropdown.vue';
+import { defineComponent } from 'vue';
 
-const agendaItemTypeIcons = {
+type TAgendaType = 'registration' | 'opening' | 'talk' | 'break' | 'coffee' | 'closing' | 'afterparty' | 'other';
+
+const AgendaItemTypeIcons: Record<TAgendaType, string> = {
   registration: 'key',
   opening: 'cal-sm',
   talk: 'tv',
@@ -51,9 +54,9 @@ const agendaItemTypeIcons = {
   closing: 'key',
   afterparty: 'cal-sm',
   other: 'cal-sm',
-};
+} as const;
 
-const agendaItemDefaultTitles = {
+const AgendaItemDefaultTitles: Record<TAgendaType, string> = {
   registration: 'Регистрация',
   opening: 'Открытие',
   break: 'Перерыв',
@@ -62,25 +65,25 @@ const agendaItemDefaultTitles = {
   afterparty: 'Afterparty',
   talk: 'Доклад',
   other: 'Другое',
-};
+} as const;
 
-const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type, title]) => ({
+const AgendaItemTypeOptions = Object.entries(AgendaItemDefaultTitles).map(([type, title]) => ({
   value: type,
   text: title,
-  icon: agendaItemTypeIcons[type],
+  icon: AgendaItemTypeIcons[type as TAgendaType],
 }));
 
-const talkLanguageOptions = [
+const TalkLanguageOptions = [
   { value: null, text: 'Не указано' },
   { value: 'RU', text: 'RU' },
   { value: 'EN', text: 'EN' },
 ];
 
-export default {
+export default defineComponent({
   name: 'MeetupAgendaItemForm',
 
-  agendaItemTypeOptions,
-  talkLanguageOptions,
+  AgendaItemTypeOptions,
+  TalkLanguageOptions,
 
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
 
@@ -90,7 +93,7 @@ export default {
       required: true,
     },
   },
-};
+});
 </script>
 
 <style scoped>
