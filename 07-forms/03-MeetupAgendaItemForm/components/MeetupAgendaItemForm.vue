@@ -1,37 +1,37 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click="$emit('remove')">
       <UiIcon icon="trash" />
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.AgendaItemTypeOptions" name="type" />
+      <UiDropdown title="Тип" :options="$options.AgendaItemTypeOptions" name="type" v-model="localData.type" />
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <UiFormGroup label="Начало">
-          <UiInput type="time" placeholder="00:00" name="startsAt" />
+          <UiInput type="time" placeholder="00:00" name="startsAt" v-model="localData.startsAt" />
         </UiFormGroup>
       </div>
       <div class="agenda-item-form__col">
         <UiFormGroup label="Окончание">
-          <UiInput type="time" placeholder="00:00" name="endsAt" />
+          <UiInput type="time" placeholder="00:00" name="endsAt" v-model="localData.endsAt" />
         </UiFormGroup>
       </div>
     </div>
 
-    <UiFormGroup label="Тема">
-      <UiInput name="title" />
+    <UiFormGroup :label="titleLabel">
+      <UiInput name="title" v-model="localData.title" />
     </UiFormGroup>
-    <UiFormGroup label="Докладчик">
-      <UiInput name="speaker" />
+    <UiFormGroup label="Докладчик" v-if="localData.type === 'talk'">
+      <UiInput name="speaker" v-model="localData.speaker" />
     </UiFormGroup>
-    <UiFormGroup label="Описание">
-      <UiInput multiline name="description" />
+    <UiFormGroup label="Описание" v-if="localData.type === 'talk' || localData.type === 'other'">
+      <UiInput multiline name="description" v-model="localData.description" />
     </UiFormGroup>
-    <UiFormGroup label="Язык">
-      <UiDropdown title="Язык" :options="$options.TalkLanguageOptions" name="language" />
+    <UiFormGroup label="Язык" v-if="localData.type === 'talk'">
+      <UiDropdown title="Язык" :options="$options.TalkLanguageOptions" name="language" v-model="localData.language" />
     </UiFormGroup>
   </fieldset>
 </template>
@@ -41,9 +41,19 @@ import UiIcon from './UiIcon.vue';
 import UiFormGroup from './UiFormGroup.vue';
 import UiInput from './UiInput.vue';
 import UiDropdown from './UiDropdown.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 type TAgendaType = 'registration' | 'opening' | 'talk' | 'break' | 'coffee' | 'closing' | 'afterparty' | 'other';
+type TAgendaItem = {
+  id: number;
+  type: TAgendaType;
+  startsAt: string;
+  endsAt: string;
+  title?: string;
+  description?: string;
+  speaker?: string;
+  language?: string;
+};
 
 const AgendaItemTypeIcons: Record<TAgendaType, string> = {
   registration: 'key',
@@ -79,6 +89,13 @@ const TalkLanguageOptions = [
   { value: 'EN', text: 'EN' },
 ];
 
+const timeToMs = (time: string): number => {
+  const [h, m] = time.split(':');
+  return 1000 * 60 * parseInt(m) + 1000 * 60 * 60 * parseInt(h);
+};
+
+const msToTime = (ms: number): string => new Date(ms).toISOString().split('T')[1].slice(0, 5);
+
 export default defineComponent({
   name: 'MeetupAgendaItemForm',
 
@@ -89,8 +106,42 @@ export default defineComponent({
 
   props: {
     agendaItem: {
-      type: Object,
+      type: Object as PropType<TAgendaItem>,
       required: true,
+    },
+  },
+
+  emits: ['remove', 'update:agendaItem'],
+
+  data(): { localData: TAgendaItem } {
+    return {
+      localData: { ...this.agendaItem },
+    };
+  },
+
+  computed: {
+    titleLabel(): string {
+      switch (this.localData.type) {
+        case 'talk':
+          return 'Тема';
+        case 'other':
+          return 'Заголовок';
+        default:
+          return 'Нестандартный текст (необязательно)';
+      }
+    },
+  },
+
+  watch: {
+    ['localData.startsAt'](newValue: string, oldValue: string) {
+      this.localData.endsAt = msToTime(timeToMs(this.localData.endsAt) + timeToMs(newValue) - timeToMs(oldValue));
+    },
+
+    localData: {
+      deep: true,
+      handler(newValue) {
+        this.$emit('update:agendaItem', newValue);
+      },
     },
   },
 });
