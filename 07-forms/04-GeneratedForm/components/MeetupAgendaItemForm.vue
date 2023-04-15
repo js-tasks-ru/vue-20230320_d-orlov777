@@ -1,171 +1,95 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click="$emit('remove')">
       <UiIcon icon="trash" />
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <UiDropdown title="Тип" :options="$options.AgendaItemTypeOptions" name="type" v-model="localData.type" />
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <UiFormGroup label="Начало">
-          <UiInput type="time" placeholder="00:00" name="startsAt" />
+          <UiInput type="time" placeholder="00:00" name="startsAt" v-model="localData.startsAt" />
         </UiFormGroup>
       </div>
       <div class="agenda-item-form__col">
         <UiFormGroup label="Окончание">
-          <UiInput type="time" placeholder="00:00" name="endsAt" />
+          <UiInput type="time" placeholder="00:00" name="endsAt" v-model="localData.endsAt" />
         </UiFormGroup>
       </div>
     </div>
 
-    <UiFormGroup label="Заголовок">
-      <UiInput name="title" />
-    </UiFormGroup>
-    <UiFormGroup label="Описание">
-      <UiInput multiline name="description" />
+    <UiFormGroup v-for="(schema, name) in formSchema" :label="schema.label" :key="name">
+      <component
+        :is="schema.component"
+        :name="name"
+        v-bind="schema.props"
+        v-model="localData[name as keyof TAgendaItem]"
+      />
     </UiFormGroup>
   </fieldset>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, type PropType } from 'vue';
 import UiIcon from './UiIcon.vue';
 import UiFormGroup from './UiFormGroup.vue';
 import UiInput from './UiInput.vue';
 import UiDropdown from './UiDropdown.vue';
+import type { TAgendaItem, TFormSchema } from '../types';
+import { AgendaItemTypeOptions, TalkLanguageOptions, FormSchema } from '../constants';
 
-const agendaItemTypeIcons = {
-  registration: 'key',
-  opening: 'cal-sm',
-  talk: 'tv',
-  break: 'clock',
-  coffee: 'coffee',
-  closing: 'key',
-  afterparty: 'cal-sm',
-  other: 'cal-sm',
+const timeToMs = (time: string): number => {
+  const [h, m] = time.split(':');
+  return 1000 * 60 * parseInt(m) + 1000 * 60 * 60 * parseInt(h);
 };
 
-const agendaItemDefaultTitles = {
-  registration: 'Регистрация',
-  opening: 'Открытие',
-  break: 'Перерыв',
-  coffee: 'Coffee Break',
-  closing: 'Закрытие',
-  afterparty: 'Afterparty',
-  talk: 'Доклад',
-  other: 'Другое',
-};
+const msToTime = (ms: number): string => new Date(ms).toISOString().split('T')[1].slice(0, 5);
 
-const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type, title]) => ({
-  value: type,
-  text: title,
-  icon: agendaItemTypeIcons[type],
-}));
-
-const talkLanguageOptions = [
-  { value: null, text: 'Не указано' },
-  { value: 'RU', text: 'RU' },
-  { value: 'EN', text: 'EN' },
-];
-
-/**
- * @typedef FormItemSchema
- * @property {string} label
- * @property {string|object} component
- * @property {object} props
- */
-/** @typedef {string} AgendaItemField */
-/** @typedef {string} AgendaItemType */
-/** @typedef {Object.<AgendaItemType, FormItemSchema>} FormSchema */
-
-/** @type FormSchema */
-const commonAgendaItemFormSchema = {
-  title: {
-    label: 'Нестандартный текст (необязательно)',
-    component: 'ui-input',
-    props: {
-      name: 'title',
-    },
-  },
-};
-
-/** @type {Object.<AgendaItemField, FormSchema>} */
-const agendaItemFormSchemas = {
-  registration: commonAgendaItemFormSchema,
-  opening: commonAgendaItemFormSchema,
-  talk: {
-    title: {
-      label: 'Тема',
-      component: 'ui-input',
-      props: {
-        name: 'title',
-      },
-    },
-    speaker: {
-      label: 'Докладчик',
-      component: 'ui-input',
-      props: {
-        name: 'speaker',
-      },
-    },
-    description: {
-      label: 'Описание',
-      component: 'ui-input',
-      props: {
-        multiline: true,
-        name: 'description',
-      },
-    },
-    language: {
-      label: 'Язык',
-      component: 'ui-dropdown',
-      props: {
-        options: talkLanguageOptions,
-        title: 'Язык',
-        name: 'language',
-      },
-    },
-  },
-  break: commonAgendaItemFormSchema,
-  coffee: commonAgendaItemFormSchema,
-  closing: commonAgendaItemFormSchema,
-  afterparty: commonAgendaItemFormSchema,
-  other: {
-    title: {
-      label: 'Заголовок',
-      component: 'ui-input',
-      props: {
-        name: 'title',
-      },
-    },
-    description: {
-      label: 'Описание',
-      component: 'ui-input',
-      props: {
-        multiline: true,
-        name: 'description',
-      },
-    },
-  },
-};
-
-export default {
+export default defineComponent({
   name: 'MeetupAgendaItemForm',
+
+  AgendaItemTypeOptions,
+  TalkLanguageOptions,
 
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
 
-  agendaItemTypeOptions,
-  agendaItemFormSchemas,
-
   props: {
     agendaItem: {
-      type: Object,
+      type: Object as PropType<TAgendaItem>,
       required: true,
     },
   },
-};
+
+  emits: ['remove', 'update:agendaItem'],
+
+  data(): { localData: TAgendaItem } {
+    return {
+      localData: { ...this.agendaItem },
+    };
+  },
+
+  computed: {
+    formSchema(): TFormSchema {
+      return FormSchema[this.localData.type];
+    },
+  },
+
+  watch: {
+    ['localData.startsAt'](newValue: string, oldValue: string) {
+      this.localData.endsAt = msToTime(timeToMs(this.localData.endsAt) + timeToMs(newValue) - timeToMs(oldValue));
+    },
+
+    localData: {
+      deep: true,
+      handler(newValue: TAgendaItem) {
+        this.$emit('update:agendaItem', newValue);
+      },
+    },
+  },
+});
 </script>
 
 <style scoped>
