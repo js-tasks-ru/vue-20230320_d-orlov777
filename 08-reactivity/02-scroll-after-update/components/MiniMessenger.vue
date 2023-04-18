@@ -13,10 +13,12 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, nextTick, ref } from 'vue';
+
 let lastId = 0;
 
-export default {
+export default defineComponent({
   name: 'MiniMessenger',
 
   data() {
@@ -44,7 +46,23 @@ export default {
       this.newMessage = '';
     },
   },
-};
+
+  computed: {
+    list(): HTMLElement {
+      return this.$refs.items[0]?.parentElement;
+    },
+  },
+
+  async updated() {
+    if (!this.$refs.items) {
+      return;
+    }
+
+    await nextTick();
+
+    this.list.scrollTop = this.list.scrollHeight;
+  },
+});
 </script>
 
 <style scoped>
