@@ -54,7 +54,7 @@ export default defineComponent({
   },
 
   async updated() {
-    if (!this.$refs.items) {
+    if (!this.list) {
       return;
     }
 
