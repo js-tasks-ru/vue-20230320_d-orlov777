@@ -47,20 +47,18 @@ export default defineComponent({
     },
   },
 
-  computed: {
-    list(): HTMLElement {
-      return this.$refs.items[0]?.parentElement;
+  watch: {
+    async ['messages.length']() {
+      const list = this.$refs.items[0]?.parentElement;
+
+      if (!list) {
+        return;
+      }
+
+      await nextTick();
+
+      list.scrollTop = list.scrollHeight;
     },
-  },
-
-  async updated() {
-    if (!this.list) {
-      return;
-    }
-
-    await nextTick();
-
-    this.list.scrollTop = this.list.scrollHeight;
   },
 });
 </script>
