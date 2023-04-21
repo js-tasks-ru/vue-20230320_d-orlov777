@@ -13,7 +13,7 @@ const config = {
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': require.resolve('jest-transform-stub'),
   },
   // Dependencies are usually in CommonJS modules
-  transformIgnorePatterns: ['/node_modules/?!nanoid/'],
+  transformIgnorePatterns: ['/node_modules/'],
 
   moduleNameMapper: {
     // Support the same @ -> src alias mapping in source code
@@ -31,8 +31,12 @@ const config = {
   setupFilesAfterEnv: ['<rootDir>/utility_modules/taskbook-jest-setup.js'],
 
   testMatch: ['**/[0-9][0-9]*/[0-9][0-9]*/**/__tests__/**/*.(spec|test|student-test).[jt]s?(x)'],
-  // https://github.com/facebook/jest/issues/6766
-  testEnvironmentOptions: { url: 'http://localhost/', customExportConditions: ['node', 'node-addons'] },
+
+  testEnvironmentOptions: {
+    url: 'https://localhost',
+    customExportConditions: ['node', 'node-addons'],
+  },
+
   watchPlugins: [require.resolve('jest-watch-typeahead/filename'), require.resolve('jest-watch-typeahead/testname')],
 
   clearMocks: true,
