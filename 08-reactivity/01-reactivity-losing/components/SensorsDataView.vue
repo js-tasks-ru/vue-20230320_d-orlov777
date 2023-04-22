@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { klona } from 'klona';
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
@@ -42,7 +43,7 @@ export default {
     },
 
     setData(sensors) {
-      this.sensors = sensors;
+      this.sensors = klona(sensors);
     },
   },
 };

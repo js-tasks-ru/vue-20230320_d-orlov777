@@ -13,7 +13,7 @@ const config = {
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': require.resolve('jest-transform-stub'),
   },
   // Dependencies are usually in CommonJS modules
-  transformIgnorePatterns: ['/node_modules/'],
+  transformIgnorePatterns: ['/node_modules/?!nanoid/'],
 
   moduleNameMapper: {
     // Support the same @ -> src alias mapping in source code

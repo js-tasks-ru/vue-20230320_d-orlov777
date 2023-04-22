@@ -1,5 +1,5 @@
 <script>
-// import { compile } from 'vue';
+import { compile, defineComponent, h } from 'vue';
 
 export default {
   name: 'TemplateRenderer',
@@ -19,6 +19,26 @@ export default {
       type: [Object, Array],
       default: () => [],
     },
+  },
+
+  computed: {
+    dynamicComponent() {
+      const components = this.components;
+      const template = this.template;
+      const bindings = this.$options.props.bindings;
+
+      return defineComponent({
+        props: { bindings },
+        components,
+        render: compile(template),
+      });
+    },
+  },
+
+  render() {
+    return h(this.dynamicComponent, {
+      bindings: this.bindings,
+    });
   },
 };
 </script>
