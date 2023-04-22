@@ -1,6 +1,6 @@
 <template>
   <main class="mini-messenger">
-    <ul class="messages">
+    <ul class="messages" ref="list">
       <li v-for="message in messages" :key="message.id" ref="items" class="message">
         {{ message.text }}
       </li>
@@ -34,8 +34,13 @@ export default defineComponent({
   },
 
   methods: {
-    handleSendSubmit() {
+    async handleSendSubmit() {
       this.send();
+
+      await nextTick();
+
+      const list = this.$refs.list as HTMLElement;
+      list.scrollTop = list.scrollHeight;
     },
 
     send() {
@@ -44,20 +49,6 @@ export default defineComponent({
         text: this.newMessage,
       });
       this.newMessage = '';
-    },
-  },
-
-  watch: {
-    async ['messages.length']() {
-      const list = this.$refs.items[0]?.parentElement;
-
-      if (!list) {
-        return;
-      }
-
-      await nextTick();
-
-      list.scrollTop = list.scrollHeight;
     },
   },
 });
