@@ -1,6 +1,6 @@
 <template>
   <main class="mini-messenger">
-    <ul class="messages">
+    <ul class="messages" ref="list">
       <li v-for="message in messages" :key="message.id" ref="items" class="message">
         {{ message.text }}
       </li>
@@ -13,10 +13,12 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, nextTick, ref } from 'vue';
+
 let lastId = 0;
 
-export default {
+export default defineComponent({
   name: 'MiniMessenger',
 
   data() {
@@ -32,8 +34,13 @@ export default {
   },
 
   methods: {
-    handleSendSubmit() {
+    async handleSendSubmit() {
       this.send();
+
+      await nextTick();
+
+      const list = this.$refs.list as HTMLElement;
+      list.scrollTop = list.scrollHeight;
     },
 
     send() {
@@ -44,7 +51,7 @@ export default {
       this.newMessage = '';
     },
   },
-};
+});
 </script>
 
 <style scoped>
