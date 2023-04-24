@@ -133,8 +133,6 @@ export default defineConfig({
       { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
       // Migration from @vue/cli Taskbook: support public assets and icons
       { find: /^\/(assets|icons)\/(.*)/, replacement: '/src/$1/$2' },
-      // Enable template compilation at runtime
-      { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
     ],
     // Migration from @vue/cli Taskbook: add .vue extension resolve
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
