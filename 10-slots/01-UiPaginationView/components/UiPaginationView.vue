@@ -1,10 +1,14 @@
 <template>
   <div class="pagination-container">
-    <!-- Контент страницы -->
+    <template v-for="{ id, item } in pageItems" :key="id">
+      <slot :item="item" />
+    </template>
   </div>
 </template>
 
 <script>
+let id = 0;
+
 export default {
   name: 'UiPaginationView',
 
@@ -24,6 +28,20 @@ export default {
     items: {
       type: Array,
       required: true,
+    },
+  },
+
+  computed: {
+    localItems() {
+      return this.items.map((it) => ({
+        id: --id,
+        item: it,
+      }));
+    },
+
+    pageItems() {
+      const startIndex = (this.page - 1) * this.perPage;
+      return this.localItems.slice(startIndex, startIndex + this.perPage);
     },
   },
 };
