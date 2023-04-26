@@ -1,15 +1,18 @@
 <template>
-  <UiCalendarView>
-    <div v-for="holiday in internationalHolidaysMap[0][7]" :key="holiday" class="holiday">
+  <UiCalendarView v-slot="{ day, month }">
+    <div v-for="holiday in getDateEvents(day, month)" :key="holiday" class="holiday">
       {{ holiday }}
     </div>
   </UiCalendarView>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import UiCalendarView from './UiCalendarView.vue';
 
-export default {
+type TMonthEvents = Record<number, string[]>;
+
+export default defineComponent({
   name: 'InternationalHolidaysCalendar',
 
   components: {
@@ -64,8 +67,8 @@ export default {
     // Для удобства можно создать вычисляемое свойство, которое приводит массив с данными к удобному виду
     // Например, здесь создаётся массив 12 объектов (по одному на каждый месяц от 0 до 11)
     // В каждом объекте поле - это день, а значение - массив праздников в этот день
-    internationalHolidaysMap() {
-      const result = Array.from(Array(12), () => ({}));
+    internationalHolidaysMap(): TMonthEvents[] {
+      const result = Array.from(Array(12), () => ({})) as TMonthEvents[];
       for (const { date, month, holiday } of this.internationalHolidays) {
         const jsMonth = month - 1;
         if (!result[jsMonth][date]) {
@@ -77,7 +80,13 @@ export default {
       return result;
     },
   },
-};
+
+  methods: {
+    getDateEvents(day: number, month: number) {
+      return this.internationalHolidaysMap[month][day];
+    },
+  },
+});
 </script>
 
 <style scoped>
