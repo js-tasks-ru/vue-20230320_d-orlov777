@@ -1,7 +1,7 @@
 <template>
   <UiCalendarView v-slot="{ day, year, month }">
     <UiCalendarEvent
-      v-for="meetup in getDateMeetups(day, month, year)"
+      v-for="meetup in meetupsMap.get(`${year}${month}${day}`) || []"
       tag="a"
       :href="`/meetups/${meetup.id}`"
       :key="meetup"
@@ -38,12 +38,19 @@ export default defineComponent({
     },
   },
 
-  methods: {
-    getDateMeetups(day: number, month: number, year: number): TMeetup[] {
-      return this.meetups.filter((it) => {
-        const date = new Date(it.date);
-        return date.getDate() === day && date.getMonth() === month && date.getFullYear() === year;
-      });
+  computed: {
+    meetupsMap(): Map<string, TMeetup[]> {
+      return this.meetups.reduce((acc, cur) => {
+        const date = new Date(cur.date);
+        const key = `${date.getFullYear()}${date.getMonth()}${date.getDate()}`;
+
+        if (!acc.has(key)) {
+          acc.set(key, []);
+        }
+        acc.get(key).push(cur);
+
+        return acc;
+      }, new Map());
     },
   },
 });
