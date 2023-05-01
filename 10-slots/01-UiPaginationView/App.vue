@@ -7,7 +7,7 @@
     </div>
 
     <UiPaginationView v-slot="{ item }" :items="meetups" :page="page" :per-page="perPage">
-      <MeetupCard :meetup="item" class="list-item" />
+      <MeetupCard :meetup="item" class="list-item" :key="item.id" />
     </UiPaginationView>
   </div>
 </template>
