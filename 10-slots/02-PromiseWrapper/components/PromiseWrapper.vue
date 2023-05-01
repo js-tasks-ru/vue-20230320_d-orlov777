@@ -20,8 +20,6 @@ type TData = {
 export default defineComponent({
   name: 'PromiseWrapper',
 
-  StateType,
-
   props: {
     promise: {
       type: Promise,
