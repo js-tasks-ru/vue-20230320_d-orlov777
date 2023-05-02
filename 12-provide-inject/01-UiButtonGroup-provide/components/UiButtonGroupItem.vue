@@ -1,5 +1,13 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button
+    class="button-group__button"
+    :class="{ 'button-group__button_active': value === activeValue }"
+    type="button"
+    aria-selected="false"
+    @click="handleClick"
+  >
+    <slot />
+  </button>
 </template>
 
 <script>
@@ -9,6 +17,14 @@ export default {
   props: {
     value: {
       required: true,
+    },
+  },
+
+  inject: ['activeValue', 'setActiveValue'],
+
+  methods: {
+    handleClick() {
+      this.setActiveValue(this.value);
     },
   },
 };
